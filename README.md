@@ -36,8 +36,7 @@ Aplikasi ini dibuat untuk mempermudah pengelolaan lomba 17-an di tingkat RT/RW/k
 | **Livewire** | 4.3 | Frontend interaktif tanpa JavaScript framework berat |
 | **Tailwind CSS** | 3.1 | Styling utility-first + Dark Mode |
 | **Alpine.js** | 3.4 | Interaktivitas ringan (tabs, dark mode toggle) |
-| **MySQL** | 8.0 | Database utama |
-| **Redis** | — | Caching (session, query cache) |
+| **MySQL** | 8.0 | Database utama (sekaligus cache store & queue) |
 | **Laravel Queues** | Database driver | Proses berat (generate PDF) dijalankan async |
 | **barryvdh/laravel-dompdf** | 3.1 | Generate sertifikat PDF |
 | **Laravel Breeze** | 2.4 | Scaffolding auth (Blade + Tailwind) |
@@ -114,7 +113,7 @@ Data **hanya disimpan ke database** saat langkah terakhir (Review & Submit).
 
 - **Maksimal 2 admin** — registrasi admin diblokir jika sudah ada 2 user
 - Admin accounts sudah di-seed: `admin1@kafeinarts.com` dan `admin2@kafeinarts.com` (password: `password`)
-- High-traffic optimization: Redis cache + queue untuk PDF
+- High-traffic optimization: database cache + queue untuk PDF
 
 ---
 
@@ -369,7 +368,6 @@ C:\laragon\www\ticketing-system\
 - Composer
 - Node.js & npm
 - MySQL 8.0
-- Redis (opsional, untuk production)
 
 ### Langkah-langkah
 
@@ -386,7 +384,7 @@ npm install
 
 # 4. Copy environment
 cp .env.example .env
-# Edit .env: DB_DATABASE, DB_USERNAME, DB_PASSWORD, CACHE_STORE=redis (jika ada Redis)
+# Edit .env: DB_DATABASE, DB_USERNAME, DB_PASSWORD
 
 # 5. Generate app key
 php artisan key:generate
@@ -503,9 +501,8 @@ File `.env`:
 ```env
 APP_ENV=production
 APP_DEBUG=false
-CACHE_STORE=redis
-SESSION_DRIVER=redis
-QUEUE_CONNECTION=redis     # Ganti dari database ke redis
+CACHE_STORE=database
+SESSION_DRIVER=database
 ```
 
 ### Perintah Berguna
